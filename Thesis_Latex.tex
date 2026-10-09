@@ -112,15 +112,18 @@
 %-----------------------------------------------------
 	\chapter{Introduction}
 	\label{ch:intro}
-	Your introduction starts here. You can use sections to organize your thoughts.
+	Multi-agent systems and cooperative game theory have long studied how autonomous, self-interested entities can form stable coalitions to achieve goals that none of them could reach alone. Less is known about how the way a coalition's gains are shared affects the willingness of rational agents to cooperate, and what that sharing does to the social welfare of their population as whole. Nature gives a familiar example of this tention in the form of group hunting in predators. Hunting together can make a catch possible that no individual could manage, but it only happens when each participant expects a fair enough share for the effort and risk it takes on.
 	
 	\section{Contributions}
 	What this thesis aims to achieve...
 	
 	\section{Thesis Outline}
 	
-	Here we give a brief overview of the content of the thesis. In Chapter 2, we present the theoretical background that is essential for understanding the various terms used and technicalities regarding artificial intelligence, multi-agent systems and coalition formation. In Chapter 3, ... In Chapter 4, we run and analyze a series of experiments   
-	
+	Here we give a brief overview of the content of the thesis. In Chapter 2, we present the theoretical background that is essential for understanding the various terms used and technicalities regarding artificial intelligence, multi-agent systems and coalition formation. \\
+ 	In Chapter 3, we describe the simulation environment in full, from the hexagonal graph topology, the prey and predator agents with the decision and execution cycles to their coalition formation protocol, with its reward distribution tactics and acceptance criteria respectively. \\
+	In Chapter 4, we run and analyze a series of experiments camparing our distribution tactics across homogeneous and heterogeneous populations of predators under normal and high synergy bonus, and we draw conclusions about cooperation and social welfare. \\
+	In Chapter 5, we present the serious game built on the foundations of the simulation environment, covering its game play, its map and immersion features and how that can play an educative part in our thesis statement. \\
+	Finally, in Chapter 6, we summarize our findings and discuss directions for future work on both the simulation and the game.
 %-----------------------------------------------------
 %---------------- Background Chapter -----------------
 %-----------------------------------------------------
@@ -880,7 +883,7 @@
 		\caption{Average Coalition Utility (Heterogeneous, High Synergy)}
 	\end{table}
 	
-	\section {Experiments Conclusions}dgfdgdgdg
+	\section {Experiments Conclusions}
 	
 	In conclusion, Meritocratic is the single most reliable driver of coalition formation and cooperation across every condition tested. It wins for nearly every individual predator type in both heterogeneous experiments and is on par in the homogeneous experiment. This is the case because high merit predators result in more successful cooperative hunts on average that reward every participant, since it is rational enough for them even while their low merit is translated into a conservative share of the reward. Experiment 1 (homogeneous) shows this is not a property of the Meritocratic formula in isolation. Under equal parameters, Meritocratic, Egalitarian, and Altruistic are mathematically identical. It only emerges once real heterogeneity is introduced (Experiments 2 and 3). \\
 	
@@ -894,15 +897,33 @@
 	\chapter{Serious Game Implementation}
 	\label{ch:game}
 	
-	In this chapter we introduce the tactical elements of our proposed serious game. The setting is a virtual, growing community of cavemen, with the player being its chief and coordinator. \\
-	\section{Hex Grid and Map Rendering}
+	In this chapter we introduce the tactical elements of our proposed serious game. This implementation acts as a visual, interactive representation of our simulation environment from Chapter 3. The setting is a virtual, growing community of humanoids, with the player being its coordinator and resource manager.
 	
 	\section{Game Play}
 	
-	The core objective is the management of a communal food stockpile, which serves as the primary metric for the population's survival and growth. This stockpile decreases over time relative to the current population's upkeep, with a bigger food stockpile facilitating proportionally more population increase. \\
+	The core gameplay loop consists of creating custom types of predators and observing their autonomous behavior as they are hunting. By recalling bad performing predators and exploring new hexes full of prey, you monitor and adjust the conditions that will help your predators to bring more food to the community. Predators have a personal stockpile of $F_{pred} = 100$ that they need for personal actions. Any erxcess food utility that they gain from hunting goes directly to the communal stockpile: \\
 	
-	The player is challenged to accommodate these needs through food collecting by creating and deploying autonomous "Predator" agents. Through the strategic deployment of these hunters, the game serves as an introduction to multi-agent AI environments, demonstrating how rational agents evaluate utility and engage in coalition formation. \\
+	% FORMULA FOR FOOD GAIN HERE
+
+	The player's main objective is to maximize the raw population numbers, using the communal stockpile as an intermidiate resource that stimulates population growth according to the following fomula: \\
+
+	% FORMULA FOR POP GROWTH HERE
 	
+	This mirrors at a group level the individual utility-maximizing objective of each solo predator describes in Section 3.3. Lastly, the game's session runs in an endless mode. There is no winning condition or a finite number of episodes like the experiments in Chapter 4. However, the game terminates if the community's population reaches zero, which is an improbable scenario. The purpose is not to punish the player but reward him when he successfully follows some basic tropes and principles of agent rationality and our findings from the experimentation to fully utilize individual agents for the gretaer good. \\
+
+	\section{Simulation Adjustments for Immersion}
+
+	In this section , we will emphasize the fundamental changes we implemented to turn our renderless simulation environment from Chapter 3 into an immersive, game-oriented one. Firstly, we explain in detail the rendering of the Hex grid map and how we turned our simulation time-steps to a more familiar concept to player. Lastly, we explain how hexes are unlocked and how that is tied to prey spawning.
+
+	\textbf{Map Rendering} \\
+
+	\textbf{Simulation Time Structure} \\
+
+	The game's passage of time is represented through a day/hour cycle, where one in-game hour corresponds to one discrete simulation timestep, matching the step-based execution defined in Section 3.3.2. This framing was chosen specifically to bring a natural, familiar concept to the player and not a basic step counter. \\
+
+	\textbf{Hex Availability and Prey Spawning} \\
+
+
 	\subsection{Predator Management}
 		
 	Players create and send out predator hunters in the wilds. Following the environment;s principles from section 3, these Predators hunt rationally for their own benefit, either alone or in coalitions, using the same coalition formation framework. However, any excess food gained beyond their personal stockpile goes directly to the Player and the community. \\
@@ -948,9 +969,8 @@
 %-----------------------------------------------------
 	\chapter{Conclusion and Future Work}
 	\label{ch:conclusion}
-	In conclusion,
 	
-	Looking forward, there are several directions to follow for further research on this topic.
+	s
 	
 	\printbibliography
 	
