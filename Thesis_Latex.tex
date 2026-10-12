@@ -129,11 +129,15 @@
 	
 	\section{Thesis Outline}
 	
-	Here we give a brief overview of the content of the thesis. In Chapter 2, we present the theoretical background that is essential for understanding the various terms used and technicalities regarding artificial intelligence, multi-agent systems and coalition formation. \\
- 	In Chapter 3, we describe the simulation environment in full, from the hexagonal graph topology, the prey and predator agents with the decision and execution cycles to their coalition formation protocol, with its reward distribution tactics and acceptance criteria respectively. \\
-	In Chapter 4, we run and analyze a series of experiments camparing our distribution tactics across homogeneous and heterogeneous populations of predators under normal and high synergy bonus, and we draw conclusions about cooperation and social welfare. \\
-	In Chapter 5, we present the serious game built on the foundations of the simulation environment, covering its game play, its map and immersion features and how that can play an educative part in our thesis statement. \\
-	Finally, in Chapter 6, we summarize our findings and discuss directions for future work on both the simulation and the game.
+	Here we give a brief overview of the content of the thesis. In Chapter 2, we present the theoretical background that is essential for understanding the various terms used and general technicalities regarding artificial intelligence, multi-agent systems and coalition formation. Once we establish the basis, we delve deeper into what specific coalition formation protocol we use, as well as the limitations of our agents' logic and action space. \\
+ 	
+	In Chapter 3, we describe the simulation environment in full, from the discrete graph topology to our novel prey and predator agents. We present in detail the latters' algorithms that consists their rational decision making and execution cycles, while we explain what constitutes their coalition formation protocol, with its reward distribution tactics and acceptance criteria respectively. \\
+	
+	In Chapter 4, we run and analyze a series of experiments camparing our distribution tactics across homogeneous and heterogeneous populations of predators under normal and high synergy bonus, and we draw conclusions about cooperation frequency and social welfare. \\
+	
+	In Chapter 5, we present the serious game prototype we built on the foundations of the simulation environment from Chapter 3, covering its game play, how the player can dynamically influence its predators to perform better, its map reconstruction and immersion features and how that can actively give an inractive, entertaining insight in our thesis work. \\
+	
+	Finally, in Chapter 6, we summarize our findings and discuss directions for future work on both the researching aspect and serious game implementation of our thesis. \\
 %-----------------------------------------------------
 %---------------- Background Chapter -----------------
 %-----------------------------------------------------
@@ -196,6 +200,8 @@
 	Each Prey $a$ is defined by a fixed type vector that compromises its characteristics in a hunt scenario. Besides that, they are identical in how they move or being interacted with. At every simulated episode setup, each prey agent is assigned a specific type at random. Depending on this type, the rest of the parameters are assigned automatically: \\
 	
 	\[{Prey}_a = \langle Type_a, P_{solo,a}, R_{a}, β_{α} \rangle\] \\
+
+	Our design of prey agents takes inspiration from the "Stag Hunt" dilemma \cite{Peysakhovich2017} and how their unique types affect a predator's ability to either cooperate with others or hunt selfishly. We also expand our prey diversity slightly to include more ways for high-risk, high-gain situations. \\
 	
 	\begin{itemize}
 		\item The "Hare" represents the smallest and safest hunting option with high success chance and low reward, with a baseline synergy factor.
@@ -612,7 +618,7 @@
 	
 	\subsection{Proposal Acceptance Criteria (EDF)}
 	
-	In order to understand how predators evaluate a coalition proposal, first we need to introduce the Effective Demand Factor $D_{eff,i}$. It is the current, non-negotiable, threshold percentage of the reward that the predator must be offered to participate in this coalition hunt. It is dynamic, driven by the predator's baseline demand that is amplified by a factor relative to his remaining food stockpile and hunting cost. It represents his actual desperation for gain relative to the imminent hunting action and his current food stockpile: \\
+	In order to understand how predators evaluate a coalition proposal, first we need to introduce the Effective Demand Factor $D_{eff,i}$. It models roughly how a predator's internal state dynamically changes the values of accepted rewards \cite{Keramati2014}. Predators are not just utility-maximizing immortal agents, but life-like entities that need constant resources (food stockpile) to be operational. Thus, $D_{eff,i}$ is the current, non-negotiable, threshold percentage of the reward that the predator must be offered to participate in this coalition hunt. It is driven by the predator's baseline demand, amplified by a factor relative to his remaining food stockpile and hunting cost. It represents his actual desperation for gain relative to the imminent hunting action and his current food stockpile: \\
 	
 	\begin{equation} \label{eq:effective_demand_factor}
 		D_{eff,i}(F_{i}) = D_{base,i} \cdot [1 + e^{-F_{i} / C_{hunt,i}}] \\
@@ -917,16 +923,52 @@
 	In this chapter we introduce the tactical elements of our proposed serious game. This implementation acts as a visual, interactive representation of our simulation environment from Chapter 3. The setting is a virtual, growing community of humanoids, with the player being its coordinator and resource manager.
 	
 	\section{Game Play}
-	
-	The core gameplay loop consists of creating custom types of predators and observing their autonomous behavior as they are hunting. By recalling bad performing predators and exploring new hexes full of prey, you monitor and adjust the conditions that will help your predators to bring more food to the community. Predators have a personal stockpile of $F_{pred} = 100$ that they need for personal actions. Any erxcess food utility that they gain from hunting goes directly to the communal stockpile: \\
-	
-	% FORMULA FOR FOOD GAIN HERE
 
-	The player's main objective is to maximize the raw population numbers, using the communal stockpile as an intermidiate resource that stimulates population growth according to the following fomula: \\
+	The core gameplay loop consists of creating custom types of predators and observing their autonomous behavior as they are hunting. In our implementation, Predators have a personal food stockpile of $F_{pred} = 100$ that they need for personal actions but any excess food utility that they gain from hunting goes directly to the communal food supply $F_{comm}$ at the end of a simulation day. The player's main objective is to use this $F_{comm}$ as an intermidiate resource , to grow the community's population $P_{comm}$. \\
 
-	% FORMULA FOR POP GROWTH HERE
+	\textbf{Population Growth and Upkeep} \\
+
+	From now on, we define population numbers as "Pops". Existing Pops require a food upkeep to remain in the community \footnote{The Upkeep rate is adjustable in the Game Settings}. New Pops grow on the foundation that the community has enough of a food surplus to sustain them. Surplus is the current food supply after we subtract the day's upkeep from our food income:
+
+	\[ Upkeep(P_{comm}) = P_{comm}^{Upkeep_{rate}} \]
+
+	\[ Surplus(P_{comm}) = F_{comm} + Income(F_{comm}) - Upkeep(P_{comm}) \]
+
+	A positive surplus at any given day will fuel a population growth rate that increases Pops, while a negative growth rate pushes Pops away. 
+
+	The computational pipeline executes daily checks governed by discrete logic and continuous mathematical modifiers. Inside \texttt{CalculateUpkeep()} and \texttt{CalculateSurplus()}, the system directly evaluates the upkeep and surplus equations defined above to establish the resource baseline for the community.
+
+	To formalize the core logic executed within \texttt{CalculateGrowth()}, the growth rate modifier $G$ is modeled as a piecewise function based on the calculated surplus ($S$) and current population ($P$):
+
+	\[
+	G(S, P) = 
+	\begin{cases} 
+	R \cdot \ln(1 + S) \cdot \left(1 - \frac{P}{C}\right) & \text{if } S \ge 0 \\[8pt]
+	-0.5 \cdot \ln(1 + |S|) & \text{if } S < 0 
+	\end{cases}
+	\]
+
+	where $R$ represents the base growth rate (\texttt{growthRate}) and $C$ denotes the population soft cap (\texttt{softCap}). 
+
+	\begin{itemize}
+		\item \textbf{Positive Surplus Regime ($S \ge 0$):} The logarithmic scaling term $\ln(1 + S)$ introduces diminishing marginal returns on food stockpiling, preventing exponential population explosions. This is modulated by the Verhulst-inspired carrying capacity factor $\left(1 - \frac{P}{C}\right)$, which dampens growth progressively as the population approaches the soft cap $C$.
+		\item \textbf{Deficit Regime ($S < 0$):} When resources fall into a deficit, the function switches to a negative logarithmic decay $-0.5 \cdot \ln(1 + |S|)$. This ensures that food shortages result in smooth, non-linear population attrition rather than sudden collapse.
+	\end{itemize}
+
+	The method \texttt{ApplyPopulationChange()} translates the continuous growth value $G$ into discrete population shifts at the end of each day cycle. Rather than applying continuous adjustments, the system enforces asymmetric decision thresholds:
+
+	\[
+	P_{t+1} = 
+	\begin{cases} 
+	P_t + 1 & \text{if } G \ge 0.75 \\[4pt]
+	\max(1, P_t - 1) & \text{if } G \le -1.25 \\[4pt]
+	P_t & \text{otherwise (Inertia Zone)}
+	\end{cases}
+	\]
+
+	This asymmetric threshold design ($0.75$ for growth versus $-1.25$ for decline) constructs a vital simulation hysteresis band between $-1.25 < G < 0.75$. This dead zone prevents rapid, jittery population fluctuations caused by minor daily economic variance, offering players a stable buffer to manage their food infrastructure. Finally, the function uses a safety floor ($\max(1, population)$) to guarantee that the community population can never drop below $1$ Pop.
 	
-	This mirrors at a group level the individual utility-maximizing objective of each solo predator describes in Section 3.3. Lastly, the game's session runs in an endless mode. There is no winning condition or a finite number of episodes like the experiments in Chapter 4. However, the game terminates if the community's population reaches zero, which is an improbable scenario. The purpose is not to punish the player but reward him when he successfully follows some basic tropes and principles of agent rationality and our findings from the experimentation to fully utilize individual agents for the gretaer good. \\
+	This mirrors at a group level the individual utility-maximizing objective of each solo predator describes in Section 3.3. Lastly, the game's session runs in an endless mode. There is no winning condition or a finite number of episodes like the experiments in Chapter 4. However, the game terminates if the community's population reaches zero, which is an improbable scenario. The purpose is not to punish the player but reward him when he successfully follows some basic tropes and principles of agent rationality and our findings from the experimentation to fully utilize individual agents for the greater good. \\
 
 	\section{Simulation Adjustments for Immersion}
 
