@@ -924,21 +924,17 @@
 	
 	\section{Game Play}
 
-	The core gameplay loop consists of creating custom types of predators and observing their autonomous behavior as they are hunting. In our implementation, Predators have a personal food stockpile of $F_{pred} = 100$ that they need for personal actions but any excess food utility that they gain from hunting goes directly to the communal food supply $F_{comm}$ at the end of a simulation day. The player's main objective is to use this $F_{comm}$ as an intermidiate resource , to grow the community's population $P_{comm}$. \\
+	The core gameplay loop consists of creating custom types of predators and observing their autonomous behavior as they are hunting. In our implementation, Predators have a personal food stockpile of $F_{pred} = 100$ that they need for personal actions but any excess food utility that they gain from hunting goes directly to the communal food supply $F_{comm}$ at the end of a simulation day. The player's main objective is to use this $F_{comm}$ as an intermidiate resource , to grow the community's population $P$. This mirrors at a group level the individual utility-maximizing objective of each solo predator describes in Section 3.3. \\
 
 	\textbf{Population Growth and Upkeep} \\
 
-	From now on, we define population numbers as "Pops". Existing Pops require a food upkeep to remain in the community \footnote{The Upkeep rate is adjustable in the Game Settings}. New Pops grow on the foundation that the community has enough of a food surplus to sustain them. Surplus is the current food supply after we subtract the day's upkeep from our food income:
+	From now on, we define population numbers as "Pops". Existing Pops require a food upkeep $U(P)$ to remain in the community \footnote{The Upkeep rate is adjustable in the Game Settings}. New Pops grow on the foundation that the community has enough of a food surplus to sustain them. Surplus $S(P)$ is the current food supply after we subtract the day's upkeep from the day's food income: \\
 
-	\[ Upkeep(P_{comm}) = P_{comm}^{Upkeep_{rate}} \]
+	\[ U(P) = P^{Upkeep_{rate}} \]
 
-	\[ Surplus(P_{comm}) = F_{comm} + Income(F_{comm}) - Upkeep(P_{comm}) \]
+	\[ S(P) = F_{comm} + Income - U(P) \] \\
 
-	A positive surplus at any given day will fuel a population growth rate that increases Pops, while a negative growth rate pushes Pops away. 
-
-	The computational pipeline executes daily checks governed by discrete logic and continuous mathematical modifiers. Inside \texttt{CalculateUpkeep()} and \texttt{CalculateSurplus()}, the system directly evaluates the upkeep and surplus equations defined above to establish the resource baseline for the community.
-
-	To formalize the core logic executed within \texttt{CalculateGrowth()}, the growth rate modifier $G$ is modeled as a piecewise function based on the calculated surplus ($S$) and current population ($P$):
+	A positive surplus at any given day will fuel a population growth $G(S, P)$ rate that increases Pops, while a negative growth rate pushes Pops away. The system directly evaluates the upkeep and surplus equations defined above to establish the resource baseline for the community. To formalize the core logic executed, the growth rate modifier $G$ is modeled as a piecewise function based on the calculated surplus ($S$) and current population ($P$): \\
 
 	\[
 	G(S, P) = 
@@ -946,16 +942,16 @@
 	R \cdot \ln(1 + S) \cdot \left(1 - \frac{P}{C}\right) & \text{if } S \ge 0 \\[8pt]
 	-0.5 \cdot \ln(1 + |S|) & \text{if } S < 0 
 	\end{cases}
-	\]
+	\] \\
 
-	where $R$ represents the base growth rate (\texttt{growthRate}) and $C$ denotes the population soft cap (\texttt{softCap}). 
+	where $R$ represents the baseline growth rate and $C$ denotes the population soft cap, both of which are adjustable in the Game Settings for personalization of experience. \\
 
 	\begin{itemize}
 		\item \textbf{Positive Surplus Regime ($S \ge 0$):} The logarithmic scaling term $\ln(1 + S)$ introduces diminishing marginal returns on food stockpiling, preventing exponential population explosions. This is modulated by the Verhulst-inspired carrying capacity factor $\left(1 - \frac{P}{C}\right)$, which dampens growth progressively as the population approaches the soft cap $C$.
 		\item \textbf{Deficit Regime ($S < 0$):} When resources fall into a deficit, the function switches to a negative logarithmic decay $-0.5 \cdot \ln(1 + |S|)$. This ensures that food shortages result in smooth, non-linear population attrition rather than sudden collapse.
 	\end{itemize}
 
-	The method \texttt{ApplyPopulationChange()} translates the continuous growth value $G$ into discrete population shifts at the end of each day cycle. Rather than applying continuous adjustments, the system enforces asymmetric decision thresholds:
+	Finally, the continuous growth value $G$ transforms into discrete population shifts at the end of each day cycle. Rather than applying continuous adjustments, the system enforces asymmetric decision thresholds. This asymmetric threshold design ($0.75$ for growth versus $-1.25$ for decline) constructs a vital simulation hysteresis band between $-1.25 < G < 0.75$. This dead zone prevents rapid, jittery population fluctuations caused by minor daily economic variance, offering players a stable buffer to manage their food infrastructure: \\
 
 	\[
 	P_{t+1} = 
@@ -964,11 +960,11 @@
 	\max(1, P_t - 1) & \text{if } G \le -1.25 \\[4pt]
 	P_t & \text{otherwise (Inertia Zone)}
 	\end{cases}
-	\]
-
-	This asymmetric threshold design ($0.75$ for growth versus $-1.25$ for decline) constructs a vital simulation hysteresis band between $-1.25 < G < 0.75$. This dead zone prevents rapid, jittery population fluctuations caused by minor daily economic variance, offering players a stable buffer to manage their food infrastructure. Finally, the function uses a safety floor ($\max(1, population)$) to guarantee that the community population can never drop below $1$ Pop.
+	\]  \\
 	
-	This mirrors at a group level the individual utility-maximizing objective of each solo predator describes in Section 3.3. Lastly, the game's session runs in an endless mode. There is no winning condition or a finite number of episodes like the experiments in Chapter 4. However, the game terminates if the community's population reaches zero, which is an improbable scenario. The purpose is not to punish the player but reward him when he successfully follows some basic tropes and principles of agent rationality and our findings from the experimentation to fully utilize individual agents for the greater good. \\
+	\textbf{Game Length and Win Conditions} \\
+
+	The game's session runs in an endless mode. There is no winning condition or a finite number of episodes like the experiments in Chapter 4. However, the game terminates if the community's population reaches zero, which is an improbable scenario. The purpose is not to punish the player but reward him when he successfully follows some basic tropes and principles of agent rationality and patterns in our experimental findings to fully utilize individual agents for the greater good. \\
 
 	\section{Simulation Adjustments for Immersion}
 
@@ -982,6 +978,13 @@
 
 	\textbf{Hex Availability and Prey Spawning} \\
 
+	Unlike our fully walkable, axial coordinate system in Chapter 4, our game features a partially "unexplored", red Hex-tile grid map. Both Prey and Predators can only move to explored, green Hex-tile coordinates. The player is able to unlock more Hexes with a gradually increasing explore cost from their food supply $S$ the further the targeted hex is from the starting Hex (0,0): \\
+
+	\[ Explore(d) = EXP_{cost}*d\] \\
+	
+	where $d$ is the distance from the center and the $EXP_{cost} = 200$ and adjustable in the Game settings. \\
+
+	This features provides more opportunities for strategic gameplay for two reasons. Firstly, the player learns about optimal agent pathing and he is incentivized to explore efficiently for its predators. Secondly, Hex exploration is tied to new prey spawning in the map. While a small cluster of random prey types spawn on launch, for latter stages in the game, the player is bound to discover new utility sources to accomodate for the ever-increasing upkeep of its Pops. The spawn rates for each type are also adjustable in the settings. \\
 
 	\subsection{Predator Management}
 		
