@@ -974,17 +974,21 @@
 
 	\textbf{Simulation Time Structure} \\
 
-	The game's passage of time is represented through a day/hour cycle, where one in-game hour corresponds to one discrete simulation timestep, matching the step-based execution defined in Section 3.3.2. This framing was chosen specifically to bring a natural, familiar concept to the player and not a basic step counter. \\
+	The game's passage of time is represented through a day/hour cycle, where one in-game hour corresponds to one discrete simulation timestep, matching the step-based execution defined in Section 3.3.2. This framing was chosen specifically to bring a natural, familiar concept to the player and not a basic step counter. Each timestep is two seconds and every in-game event and update subscribes to this system, effectively ensuring that all actions are executed properly and almost simultaneously before each timestep. The player also has access to a simulation time manager, that pauses and unpauses , and fast forwards the game at various speeds. \\
+
+	--- TICK MANAGER SCREENSHOT HERE --- \\
 
 	\textbf{Hex Availability and Prey Spawning} \\
 
-	Unlike our fully walkable, axial coordinate system in Chapter 4, our game features a partially "unexplored", red Hex-tile grid map. Both Prey and Predators can only move to explored, green Hex-tile coordinates. The player is able to unlock more Hexes with a gradually increasing explore cost from their food supply $S$ the further the targeted hex is from the starting Hex (0,0): \\
+	To simulate stakes and spatial constraints, the game environment is also divided into a partially "unexplored", red Hex-tile grid map. Both Prey and Predators can only move to explored, green Hex-tile coordinates. The player must expend food to explore adjacent-to-explored Hexes with a gradually increasing explore cost from their food supply $S$ the further the targeted hex is from the starting Hex (0,0): \\
 
 	\[ Explore(d) = EXP_{cost}*d\] \\
 	
 	where $d$ is the distance from the center and the $EXP_{cost} = 200$ and adjustable in the Game settings. \\
 
-	This features provides more opportunities for strategic gameplay for two reasons. Firstly, the player learns about optimal agent pathing and he is incentivized to explore efficiently for its predators. Secondly, Hex exploration is tied to new prey spawning in the map. While a small cluster of random prey types spawn on launch, for latter stages in the game, the player is bound to discover new utility sources to accomodate for the ever-increasing upkeep of its Pops. The spawn rates for each type are also adjustable in the settings. \\
+	This features provides more opportunities for strategic gameplay for two reasons. Firstly, the player learns about optimal agent pathing and he is incentivized to explore efficiently for its predators. Secondly, Hex exploration is tied to new prey spawning in the map. While a small cluster of random prey types spawn on launch, for latter stages in the game, the player is bound to discover new utility sources to accomodate for the ever-increasing upkeep of its Pops. The spawn rates for each type are also adjustable in the Game settings. \\
+
+	--- HEX EXPLORE SCREENSHOT HERE --- \\
 
 	\subsection{Predator Management}
 		
@@ -1013,12 +1017,6 @@
 	To evaluate the performance of different predator configurations and negotiation tactics, the game system provides comprehensive data tracking. A dedicated statistics interface allows the player to monitor the success rates and food yields of various predator types. \\
 	
 	These visual aids, including graphs and performance metrics, enable the player to identify which combinations of Merit, Demand, Effort and Tactic that foster the most efficient coalitions. By analyzing these results, the player can observe how the "bargaining power" of agents—derived from their procedural rules and preferences—manifests in the game's economy. \\
-	
-	\subsection{Hex Exploration}
-	
-	To simulate stakes and spatial constraints, the game environment is also divided into a hexagonal grid. Predators begin in the Starting Hex and can only move into revealed hexes. Players must expend food to explore adjacent-to-explored Hexes, uncovering new areas and available prey. \\
-	
-	While prey populations are not hunted to total extinction, new prey have a chance to appear only upon Hex exploration. Thus, it is a functional requirement for predators to find new targets and maintain the community's growth. This spatial element adds a layer of strategy as clever clustering of explored areas may benefit the Player long term. \\
 	
 %-----------------------------------------------------
 %---------------- Conclusion Chapter -----------------
