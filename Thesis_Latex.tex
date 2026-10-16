@@ -926,21 +926,25 @@
 	\chapter{Serious Game Implementation}
 	\label{ch:game}
 	
-	In this chapter we introduce the tactical elements of our proposed serious game. This implementation acts as a visual, interactive representation of our simulation environment from Chapter 3. The setting is a virtual, growing community of humanoids, with the player being its coordinator and resource manager.
-	
-	\section{Game Play}
+	In this chapter, we present the serious game prototype built on top of our simulation environment from Chapter 3. The game is not a separate system. It reuses the same agent decision cycle, utility calculations and coalition bargaining protocol, and adds a rendered world, a player and a community economy around them using the Unity game engine. The setting is a virtual, growing community of humanoids, with the player acting as its coordinator and resource manager. Rather than commanding predators directly, the player decides which predators to create and send out, and then watches them act autonomously as rational agents. We first describe the game’s objective and its community economy, then how the simulation was reimplemented and adapted for play. Finally we present how the player manages predators and how the game maps to the concepts of this thesis.
 
-	The core gameplay loop consists of creating custom types of predators and observing their autonomous behavior as they are hunting. In our implementation, Predators have a personal food stockpile of $F_{pred} = 100$ that they need for personal actions but any excess food utility that they gain from hunting goes directly to the communal food supply $F_{comm}$ at the end of a simulation day. The player's main objective is to use this $F_{comm}$ as an intermidiate resource , to grow the community's population $P$. This mirrors at a group level the individual utility-maximizing objective of each solo predator describes in Section 3.3. \\
+	\section{Game Overview}
 
-	\textbf{Population Growth and Upkeep} \\
+	The core gameplay loop consists of creating custom types of predators, sending them out and observing their autonomous behavior as they hunt. Each predator carries a personal food stockpile of $F_{pred} = 100$ that it needs for its own actions, and any excess food it gains from hunting goes to the communal food supply $F_{comm}$ at the end of a simulation day. The player’s main objective is to use $F_{comm}$ as an intermediate resource to grow the community’s population $P$. This mirrors, at a group level, the individual utility-maximizing objective of each predator described in Section 3.3. \\
 
-	From now on, we define population numbers as "Pops". Existing Pops require a food upkeep $U(P)$ to remain in the community \footnote{The Upkeep rate is adjustable in the Game Settings}. New Pops grow on the foundation that the community has enough of a food surplus to sustain them. Surplus $S(P)$ is the current food supply after we subtract the day's upkeep from the day's food income: \\
+	The game runs in an endless mode. There is no winning condition and no finite number of episodes as in the experiments of Chapter 4, and the game ends only if the population reaches zero. The purpose is not to punish the player, but to reward them when they follow the principles of agent rationality and the patterns we found in our experiments, while also giving them the tools to test their own strategies.
+
+	\section{Community Economy}
+
+	The community’s economy has no counterpart in the simulation environment, so we define it explicitly here. Since the player works for the good of the group, they indulge in the utilitarian view of welfare in Section 2.4 and try to maximize utility gains from their autonomous predators. In order to give an extra realistic incentive than simply accumulating raw numbers, we tie the communal food supply to the growth and maintenance of an abstract humanoid population. \\
+
+	From now on, we define that population's numbers as "Pops". Existing Pops require a food upkeep $U(P)$ to remain in the community \footnote{The Upkeep rate is adjustable in the Game Settings}. New Pops grow on the foundation that the community has enough of a food surplus to sustain them. Surplus $S(P)$ is the current food supply after we subtract the day's upkeep from the day's food income: \\
 
 	\[ U(P) = P^{Upkeep_{rate}} \]
 
 	\[ S(P) = F_{comm} + Income - U(P) \] \\
 
-	A positive surplus at any given day will fuel a population growth $G(S, P)$ rate that increases Pops, while a negative growth rate pushes Pops away. The system directly evaluates the upkeep and surplus equations defined above to establish the resource baseline for the community. To formalize the core logic executed, the growth rate modifier $G$ is modeled as a piecewise function based on the calculated surplus ($S$) and current population ($P$): \\
+	Income refers to the total excess food gained from all active predators across one simulation day (24 timesteps) that is added at the end of the day. A positive surplus at any given day will fuel a population growth $G(S, P)$ rate that increases Pops, while a negative growth rate pushes Pops away. The system directly evaluates the upkeep and surplus equations defined above to establish the resource baseline for the community. To formalize the core logic executed, the growth rate modifier $G$ is modeled as a piecewise function based on the calculated surplus ($S$) and current population ($P$): \\
 
 	\[
 	G(S, P) = 
@@ -950,7 +954,7 @@
 	\end{cases}
 	\] \\
 
-	where $R$ represents the baseline growth rate and $C$ denotes the population soft cap, both of which are adjustable in the Game Settings for personalization of experience. \\
+	where $R$ represents the baseline growth rate and $C$ denotes the population soft cap. The logarithmic term and the logistic cap factor $(1 - P/C)$ is based on Verhulst's law of population growth \cite{Bacaer2011} and were chosen to give diminishing returns and a soft ceiling, while the thresholds (0.75 and -1.25) were tuned through playtesting. \\
 
 	\begin{itemize}
 		\item \textbf{Positive Surplus Regime ($S \ge 0$):} The logarithmic scaling term $\ln(1 + S)$ introduces diminishing marginal returns on food stockpiling, preventing exponential population explosions. This is modulated by the Verhulst-inspired carrying capacity factor $\left(1 - \frac{P}{C}\right)$, which dampens growth progressively as the population approaches the soft cap $C$.
@@ -968,9 +972,7 @@
 	\end{cases}
 	\]  \\
 	
-	\textbf{Game Length and Win Conditions} \\
-
-	The game's session runs in an endless mode. There is no winning condition or a finite number of episodes like the experiments in Chapter 4. However, the game terminates if the community's population reaches zero, which is an improbable scenario. The purpose is not to punish the player but reward him when he successfully follows some basic tropes and principles of agent rationality and patterns in our experimental findings to fully utilize individual agents for the greater good. \\
+	\section{Implementation and Fidelity to the Simulation}
 
 	\section{Simulation Adjustments for Immersion}
 
@@ -996,7 +998,21 @@
 
 	--- HEX EXPLORE SCREENSHOT HERE --- \\
 
-	\subsection{Predator Management}
+	\textbf{Game Configuration} \\
+
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|c|}
+			\hline
+			Parameter & Meaning & Default Value \\
+			\hline
+
+			\hline
+		\end{tabular}
+		\caption{Average Coalition Frequency (Heterogeneous, High Synergy)}
+	\end{table}
+
+	\section{Predator Management}
 		
 	Players create and send out predator hunters in the wilds. Following the environment;s principles from section 3, these Predators hunt rationally for their own benefit, either alone or in coalitions, using the same coalition formation framework. However, any excess food gained beyond their personal stockpile goes directly to the Player and the community. \\
 	
