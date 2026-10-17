@@ -974,6 +974,8 @@
 	
 	\section{Implementation and Fidelity to the Simulation}
 
+    
+
 	\section{Simulation Adjustments for Immersion}
 
 	In this section , we will emphasize the fundamental changes we implemented to turn our renderless simulation environment from Chapter 3 into an immersive, game-oriented one. Firstly, we explain in detail the rendering of the Hex grid map and how we turned our simulation time-steps to a more familiar concept to player. Lastly, we explain how hexes are unlocked and how that is tied to prey spawning.
@@ -1000,13 +1002,15 @@
 
 	\textbf{Game Configuration} \\
 
+    Several parameters of the game are adjustable in a settings menu, so that the experience can be personalized and balanced. While the player is free to experiment, the game outcomes could be unstable and unreliable. Important values such as prey rewards and success chances and predator parameter limitations remain unchanged for a baseline congruence. Table 5.1 lists them with their default values, which are directly drawn from the simulation environment of Chapter 3. \\
+
 	\begin{table}[H]
 		\centering
 		\begin{tabular}{|c|c|c|}
 			\hline
 			Parameter & Meaning & Default Value \\
 			\hline
-
+            
 			\hline
 		\end{tabular}
 		\caption{Average Coalition Frequency (Heterogeneous, High Synergy)}
