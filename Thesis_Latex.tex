@@ -974,7 +974,13 @@
 	
 	\section{Implementation and Fidelity to the Simulation}
 
-    
+    The simulation of Chapter 3 and the experiments of Chapter 4 were written in Python. For the game, we reimplemented the agent logic natively in C# within the Unity game engine, instead of connecting Unity to a Python backend. This was decided early on development to avoid unnecessary complications in the infrastructure, since this prototype is not that computationally heavy. \\
+
+	The reimplementation follows the same formulas (Equations [3.x to 3.y]), the same decision and execution cycles (Algorithms 1 to 4) and the same parameter structure, so a predator with the same type vector decides in the same way. Because the codebase is separate, correctness relies on faithful reimplementation, not on shared code. Its worth mentioning that the experimentation outcomes are not reproducible in this implementation as seed generation is non-existent and it would take an impossible amount of time due to the game being rendered in real time. \\
+
+	The main system components are divided into managers, each described briefly in the table that follows: \\
+
+	TABLE WITH ALL MANAGERS
 
 	\section{Simulation Adjustments for Immersion}
 
