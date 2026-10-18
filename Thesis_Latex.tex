@@ -1,5 +1,6 @@
 \documentclass[12pt,a4paper]{report}
 \usepackage[utf8]{inputenc}
+\usepackage{csquotes} 
 \usepackage[greek,english]{babel}
 \usepackage{alphabeta}
 \usepackage{graphicx}
@@ -971,56 +972,6 @@
 	P_t & \text{otherwise (Inertia Zone)}
 	\end{cases}
 	\]  \\
-	
-	\section{Implementation and Fidelity to the Simulation}
-
-    The simulation of Chapter 3 and the experiments of Chapter 4 were written in Python. For the game, we reimplemented the agent logic natively in C# within the Unity game engine, instead of connecting Unity to a Python backend. This was decided early on development to avoid unnecessary complications in the infrastructure, since this prototype is not that computationally heavy. \\
-
-	The reimplementation follows the same formulas (Equations [3.x to 3.y]), the same decision and execution cycles (Algorithms 1 to 4) and the same parameter structure, so a predator with the same type vector decides in the same way. Because the codebase is separate, correctness relies on faithful reimplementation, not on shared code. Its worth mentioning that the experimentation outcomes are not reproducible in this implementation as seed generation is non-existent and it would take an impossible amount of time due to the game being rendered in real time. \\
-
-	The main system components are divided into managers, each described briefly in the table that follows: \\
-
-	TABLE WITH ALL MANAGERS
-
-	\section{Simulation Adjustments for Immersion}
-
-	In this section , we will emphasize the fundamental changes we implemented to turn our renderless simulation environment from Chapter 3 into an immersive, game-oriented one. Firstly, we explain in detail the rendering of the Hex grid map and how we turned our simulation time-steps to a more familiar concept to player. Lastly, we explain how hexes are unlocked and how that is tied to prey spawning.
-
-	\textbf{Map Rendering} \\
-
-	\textbf{Simulation Time Structure} \\
-
-	The game's passage of time is represented through a day/hour cycle, where one in-game hour corresponds to one discrete simulation timestep, matching the step-based execution defined in Section 3.3.2. This framing was chosen specifically to bring a natural, familiar concept to the player and not a basic step counter. Each timestep is two seconds and every in-game event and update subscribes to this system, effectively ensuring that all actions are executed properly and almost simultaneously before each timestep. The player also has access to a simulation time manager, that pauses and unpauses , and fast forwards the game at various speeds. \\
-
-	--- TICK MANAGER SCREENSHOT HERE --- \\
-
-	\textbf{Hex Availability and Prey Spawning} \\
-
-	To simulate stakes and spatial constraints, the game environment is also divided into a partially "unexplored", red Hex-tile grid map. Both Prey and Predators can only move to explored, green Hex-tile coordinates. The player must expend food to explore adjacent-to-explored Hexes with a gradually increasing explore cost from their food supply $S$ the further the targeted hex is from the starting Hex (0,0): \\
-
-	\[ Explore(d) = EXP_{cost}*d\] \\
-	
-	where $d$ is the distance from the center and the $EXP_{cost} = 200$ and adjustable in the Game settings. \\
-
-	This features provides more opportunities for strategic gameplay for two reasons. Firstly, the player learns about optimal agent pathing and he is incentivized to explore efficiently for its predators. Secondly, Hex exploration is tied to new prey spawning in the map. While a small cluster of random prey types spawn on launch, for latter stages in the game, the player is bound to discover new utility sources to accomodate for the ever-increasing upkeep of its Pops. The spawn rates for each type are also adjustable in the Game settings. \\
-
-	--- HEX EXPLORE SCREENSHOT HERE --- \\
-
-	\textbf{Game Configuration} \\
-
-    Several parameters of the game are adjustable in a settings menu, so that the experience can be personalized and balanced. While the player is free to experiment, the game outcomes could be unstable and unreliable. Important values such as prey rewards and success chances and predator parameter limitations remain unchanged for a baseline congruence. Table 5.1 lists them with their default values, which are directly drawn from the simulation environment of Chapter 3. \\
-
-	\begin{table}[H]
-		\centering
-		\begin{tabular}{|c|c|c|}
-			\hline
-			Parameter & Meaning & Default Value \\
-			\hline
-            
-			\hline
-		\end{tabular}
-		\caption{Average Coalition Frequency (Heterogeneous, High Synergy)}
-	\end{table}
 
 	\section{Predator Management}
 		
@@ -1050,6 +1001,84 @@
 	
 	These visual aids, including graphs and performance metrics, enable the player to identify which combinations of Merit, Demand, Effort and Tactic that foster the most efficient coalitions. By analyzing these results, the player can observe how the "bargaining power" of agents—derived from their procedural rules and preferences—manifests in the game's economy. \\
 	
+	
+	\section{Implementation and Fidelity to the Simulation}
+
+    The simulation of Chapter 3 and the experiments of Chapter 4 were written in Python. For the game, we reimplemented the agent logic natively in C-sharp within the Unity game engine, instead of connecting Unity to a Python backend. This was decided early on development to avoid unnecessary complications in the infrastructure, since this prototype is not that computationally heavy. \\
+
+	The reimplementation follows the same formulas (Equations 3.x to 3.y), the same decision and execution cycles (Algorithms 1 to 4) and the same parameter structure, so a predator with the same type vector decides in the same way. Because the codebase is separate, correctness relies on faithful reimplementation, not on shared code. Its worth mentioning that the experimentation outcomes are not reproducible in this implementation as seed generation is non-existent and it would take an impossible amount of time due to the game being rendered in real time. The main system components are divided into managers, each described briefly in the table that follows: \\
+
+	\begin{table}[H]
+		\centering
+		\renewcommand{\arraystretch}{1.5}
+		\begin{tabular}{|l|p{0.60\textwidth}|}
+			\hline
+			System Manager & Functionality \\
+			\hline
+            Simulation Manager & Handles the main time-step loop, lists and action priority of all agents and food gain updates. \\
+			Game Manager &  Handles Player's actions and resources' computations and updates. \\
+			Hex Grid Manager & Handles map rendering using the HexMeshGenerator.cs, map visuals and real-time updates to hexes and terrain. \\
+			Tick Manager & Handles the simulation time and timestep subscription of other managers. \\
+			UI Manager & Handles UI rendering and real-time calls and updates. \\
+			Spawn Manager & Handles the spawning, despawning and registration of all simulation agents. \\
+			Decision Manager & Handles the decision-making and executes the decision cycle algorithms for predators. \\
+			Execution Manager & Handles the execution cycle and algorithms for all agents, gets called after the Decision Manager. \\
+			Selection Manager & Handles the selection of all interactable simulation objects. Works with the ISelectable interface. \\
+			\hline
+		\end{tabular}
+		\caption{Game System Managers and Functionality.}
+	\end{table}
+
+	\section{Simulation Adjustments for Immersion}
+
+	In this section , we will emphasize the fundamental changes we implemented to turn our renderless simulation environment from Chapter 3 into an immersive, game-oriented one. Firstly, we explain in detail the rendering of the Hex grid map and how we turned our simulation time-steps to a more familiar concept to player. Lastly, we explain how hexes are unlocked and how that is tied to prey spawning.
+
+	\textbf{Map Rendering} \\
+
+	\textbf{Simulation Time Structure} \\
+
+	The game's passage of time is represented through a day/hour cycle, where one in-game hour corresponds to one discrete simulation timestep, matching the step-based execution defined in Section 3.3.2. This framing was chosen specifically to bring a natural, familiar concept to the player and not a basic step counter. Each timestep is two seconds and every in-game event and update subscribes to this system, effectively ensuring that all actions are executed properly and almost simultaneously before each timestep. The player also has access to a simulation time manager, that pauses and unpauses , and fast forwards the game at various speeds. \\
+
+	--- TICK MANAGER SCREENSHOT HERE --- \\
+
+	\textbf{Hex Availability and Prey Spawning} \\
+
+	To simulate stakes and spatial constraints, the game environment is also divided into a partially "unexplored", red Hex-tile grid map. Both Prey and Predators can only move to explored, green Hex-tile coordinates. The player must expend food to explore adjacent-to-explored Hexes with a gradually increasing explore cost from their food supply $S$ the further the targeted hex is from the starting Hex (0,0): \\
+
+	\[ Explore(d) = EXP_{cost}*d\] \\
+	
+	where $d$ is the distance from the center and the $EXP_{cost} = 200$. \\
+
+	This features provides more opportunities for strategic gameplay for two reasons. Firstly, the player learns about optimal agent pathing and he is incentivized to explore efficiently for its predators. Secondly, Hex exploration is tied to new prey spawning in the map. While a small cluster of random prey types spawn on launch, for latter stages in the game, the player is bound to discover new utility sources to accomodate for the ever-increasing upkeep of its Pops. The spawn rates for each type are also adjustable in the Game settings. \\
+
+	--- HEX EXPLORE SCREENSHOT HERE --- \\
+
+	\textbf{Game Configuration} \\
+
+    Several parameters of the game are adjustable in a settings menu, so that the experience can be personalized and balanced. While the player is free to experiment, the game outcomes could be unstable and unreliable. Important values such as prey rewards and success chances and predator parameter limitations remain unchanged for a baseline congruence. Table 5.1 lists them with their default values, which are directly drawn from the simulation environment of Chapter 3. \\
+
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|c|}
+			\hline
+			Parameter & Meaning & Default Value \\
+			\hline
+            $F_{pred}$ & Predator's starting food and capacity. & 100 \\
+			$Upkeep_{rate}$ & Exponent of population upkeep. & 1.08 \\
+			$R$ and $C$ & Population baseline growth rate and soft cap. & [0.35, 400] \\
+			$L_{asymmetric}$ & Leader's share in Asymmetric tactic. & 0.2 \\
+			$β$ & Baseline synergy beta factor. & 2 \\
+			$Ticks_{roam}(Prey)$ & Prey ticks per automatic roam. & 6 \\
+			$Prey_{exp}$ & Prey spawned per explored Hex & 2 \\
+			$EXP_{cost}$ & Cost of exploring a Hex. & 200 \\
+			$C_{move}$ & Cost of predator movement. & 5 \\
+			$C_{param}(K)$ & Creation cost per point K for [merit, demand, effort] & [10, 10, 10] \\
+			$Spawn_{rate}(Prey)$ & Spawn frequencies for [Hare, Stag, Mammoth] & [0.6, 0.3, 0.1] \\
+			\hline
+		\end{tabular}
+		\caption{Game Configuration and Customizable Settings. }
+	\end{table}
+
 %-----------------------------------------------------
 %---------------- Conclusion Chapter -----------------
 %-----------------------------------------------------
