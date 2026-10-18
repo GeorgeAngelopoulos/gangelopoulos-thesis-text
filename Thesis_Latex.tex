@@ -1031,15 +1031,87 @@
 
 	\section{Simulation Adjustments for Immersion}
 
-	In this section , we will emphasize the fundamental changes we implemented to turn our renderless simulation environment from Chapter 3 into an immersive, game-oriented one. Firstly, we explain in detail the rendering of the Hex grid map and how we turned our simulation time-steps to a more familiar concept to player. Lastly, we explain how hexes are unlocked and how that is tied to prey spawning.
+	In this section , we will emphasize the fundamental changes we implemented to turn our renderless simulation environment from Chapter 3 into an immersive, game-oriented one. Firstly, we explain in detail the rendering of the Hex grid map and how we turned our simulation time-steps to a more familiar concept to player. Lastly, we explain how hexes are unlocked and how that is tied to prey spawning. \\
 
 	\textbf{Map Rendering} \\
+
+	To render the hex grid map, we first define a Hex data struct that hold its world position on the game engine, its Q and R coordinates and a flag of whether its explored or not. The construction of one Hex follows the logic of combining the top corners of seven triangles, and rotating them according to match the shape of a hexagon. We need seven and not six, so that overlapping prevents the later hex Mesh to have bugs. Everyone of these Hexagons we later add to a unified HexMesh with a generator algorithm, having appropriate gaps in between for clarity. \\
+
+	\begin{algorithm}[H]
+		\caption{Hex Grid Mesh Generation}
+		\label{alg:generate_hex_mesh}
+		
+		\SetKwInput{KwIn}{Input}
+		\SetKwInput{KwOut}{Output}
+		
+		\KwIn{Array of hex nodes $N$}
+		\KwOut{Updated hex mesh with vertices, triangles, and colors, and an updated collider}
+		
+		\BlankLine
+		
+		clear hex mesh\;
+		clear vertex, triangle, and color lists\;
+		
+		\For{each node in $N$}{
+			add hex mesh geometry for node\;
+		}
+		
+		assign vertex list to hex mesh vertices\;
+		assign triangle list to hex mesh triangles\;
+		assign color list to hex mesh colors (used for highlights and terrain types)\;
+		recalculate hex mesh normals\;
+		
+		\If{object has a mesh collider}{
+			set collider's shared mesh to hex mesh so raycasting matches the new shape\;
+		}
+	\end{algorithm}
+
+	\vspace{1em}
+
+	There is a dedicated green color of explored and red for unexplored hexes. For now to update one hex in the map, you need to recalculate every color in the hex Mesh. In later stages of development, this will be updated with different biomes and aesthetics. \\
+
+	\begin{algorithm}[H]
+		\caption{Hex Grid Mesh Color Update}
+		\label{alg:update_mesh_colors}
+		
+		\SetKwInput{KwIn}{Input}
+		\SetKwInput{KwOut}{Output}
+		
+		\KwIn{Array of hex nodes $N$}
+		\KwOut{Updated hex mesh colors reflecting the walkability of each node}
+		
+		\BlankLine
+		
+		clear color list\;
+		
+		\For{each node in $N$}{
+			\If{node is walkable}{
+				set tile color to walkable green\;
+			}
+			\Else{
+				set tile color to non-walkable brown\;
+			}
+			
+			\For{each of the 6 sides of node}{
+				add tile color to color list 9 times (one per vertex of the side)\;
+			}
+		}
+		
+		assign color list to hex mesh colors (re-uploaded to the GPU)\;
+	\end{algorithm}
+
+	\vspace{1em}
 
 	\textbf{Simulation Time Structure} \\
 
 	The game's passage of time is represented through a day/hour cycle, where one in-game hour corresponds to one discrete simulation timestep, matching the step-based execution defined in Section 3.3.2. This framing was chosen specifically to bring a natural, familiar concept to the player and not a basic step counter. Each timestep is two seconds and every in-game event and update subscribes to this system, effectively ensuring that all actions are executed properly and almost simultaneously before each timestep. The player also has access to a simulation time manager, that pauses and unpauses , and fast forwards the game at various speeds. \\
 
-	--- TICK MANAGER SCREENSHOT HERE --- \\
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.9\textwidth]{TICKMANAGER.png}
+		\caption{Simulation Time Manager and Resources UI.}
+		\label{fig:tickmanager}
+	\end{figure}
 
 	\textbf{Hex Availability and Prey Spawning} \\
 
@@ -1051,7 +1123,19 @@
 
 	This features provides more opportunities for strategic gameplay for two reasons. Firstly, the player learns about optimal agent pathing and he is incentivized to explore efficiently for its predators. Secondly, Hex exploration is tied to new prey spawning in the map. While a small cluster of random prey types spawn on launch, for latter stages in the game, the player is bound to discover new utility sources to accomodate for the ever-increasing upkeep of its Pops. The spawn rates for each type are also adjustable in the Game settings. \\
 
-	--- HEX EXPLORE SCREENSHOT HERE --- \\
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\textwidth]{UNEXPLORED.png}
+		\caption{Selected Unexplored Hex with (-1, 1) coordinates.}
+		\label{fig:unexplored}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\textwidth]{EXPLORED.png}
+		\caption{Selected Explored Hex with (-1, 1) coordinates with Prey spawned.}
+		\label{fig:explored}
+	\end{figure}
 
 	\textbf{Game Configuration} \\
 
@@ -1078,6 +1162,12 @@
 		\end{tabular}
 		\caption{Game Configuration and Customizable Settings. }
 	\end{table}
+
+	\section{Educational Alignment}
+
+	The purpose of the game is to let the player encounter the concepts of this thesis through play. Choosing to create a predator with selecting its parameters and tactics offer the player a taste of configuring a simple agent that is ready to act autonomously. Being within a specific budget K, it limits that creation to that of resource bound agents explained in sections 2.4 and 3.4.2. Seeing these predators successfully capturing prey and get rewarded, it gives an insight on how agents interact and form coalition with each other, as explained in section 3.4. \\ 
+
+	The game demonstrates these mechanics in-game, but it has not been evaluated with players, so we cannot yet claim that it improves understanding. Features that would make the educational purpose explicit, such as a guiding tutorial and a statistics interface, are described in Section 6.2.
 
 %-----------------------------------------------------
 %---------------- Conclusion Chapter -----------------
