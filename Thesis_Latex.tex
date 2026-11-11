@@ -357,7 +357,7 @@
 	
 	\textbf{The Decision Phase} \\
 	
-	Firstly, Resting and Moving around the coordinates are treated as default options of any predator, ensuring that they always possess a baseline behavior. Then, according to other agents' presence, hunting Solo or in Coalitions are also available. Predators can only hunt prey that hasn't already been targeted in this time-step to avoid collisions in logic. Every option is then followed by a computation function that informs the predator about its expected utility gain and the structural data necessary to execute it. 
+	Firstly, Resting and Moving around the coordinates are treated as default options of any predator, ensuring that they always possess a baseline behavior. Then, according to other agents' presence, hunting Solo or in Coalitions are also available. Predators can only hunt prey that has not already been targeted in this time-step to avoid collisions in logic. Every option is then followed by a computation function that informs the predator about its expected utility gain and the structural data necessary to execute it. 
 	
 	\begin{figure}[H]
 		\centering
@@ -655,11 +655,11 @@
 	
 	\chapter{Experiments and Results}
 	\label{ch:simulations}
-	In this chapter, we use the simulation environment we built to compare the performance of our distribution tactics from Section 3.4.2, using various types of predators.The first experiment features a homogeneous predator population with normal synergistic bonus, while the second and third experiments feature a heterogeneous predator population with normal and high synergistic bonus respectively. \\
-	
-	For the evaluation and comparison, we measure the average hunt performance and utility distribution from the predators' type interactions with a 0.95 confidence interval across the entirety of seeded episodes. These include the total of solo hunt attempts and group hunt attempts under a coalition formation, while also the utility gained from hunting solo and from hunting in a coalition, either as an initiator or a partner. \\
-	
+	In this chapter, we use the simulation environment we built to compare the performance of our reward distribution tactics (Altruistic, Asymmetric, Egalitarian, Meritocratic) from Section 3.4.2, using various types of predators. The first experiment features a homogeneous predator population with normal synergistic bonus, while the second and third experiments feature a heterogeneous predator population with normal and high synergistic bonus respectively.
+
 	\section{Simulated Experiments}
+
+	For the evaluation and comparison, we measure the average hunt performance and utility distribution from the predators' type interactions with a 0.95 confidence interval across the entirety of seeded episodes. These include the total of solo hunt attempts and group hunt attempts under coalition formation and the utility gained from hunting solo and from hunting in a coalition, either as an initiator or a partner. \\
 	
 	Every experiment we conduct features 10 predators and 25 prey agents for a total of 10,000 episodes, 500 time-steps each. Predator type vary across experiments while prey types are assigned at random in each episode. Furthermore, we use Seed generation to verify that the experimental results are academically justifiable. \\
 	
@@ -671,7 +671,7 @@
 		\item Agent movement where randomness is required.
 	\end{itemize}
 	
-	If the specific conditions of a hunt attempt are also identical (predator types and positions), then the hunting result will also be exact across the four tactics and the three experiments. This way, the only difference will reside in how predators decide rationally with each distribution tactic in place and not in an unfortunate sequence of events. \\  
+	If the specific conditions of a hunt attempt are also identical (predator types, positions, participants), then the hunting result will also be the same, indifferent to probabilistic noise across all four tactics and all three experiments. In this way, the only difference will reside in how predators decide rationally with each reward distribution tactic in place and not by an unfortunate sequence of failed hunts. \\  
 
 	\subsection{Homogeneous Predators, Normal Synergy}
 	
@@ -693,7 +693,7 @@
 		\label{fig:exp_1_baseline_B}
 	\end{figure}
 	
-	This experiment is a solid proof that the tactic itself only matters when predators are heterogeneous enough for it to differentiate their shares. No tactic provides a clear increase in cooperation. In symmetric split rules, homogeneity flattens out any difference that only the Asymmetric split with clearly defined roles can result in a slight utility advantage, that doesn't necessarily promote social welfare. \\
+	This experiment is a solid proof that the tactic itself only matters when predators are heterogeneous enough for it to differentiate their shares. No tactic provides a clear increase in cooperation. In symmetric split rules, homogeneity flattens out any difference that only the Asymmetric split with clearly defined roles can result in a slight utility advantage, that does not necessarily promote social welfare. \\
 	
 	\subsection{Heterogeneous Predators, Normal Synergy}
 	
@@ -773,7 +773,7 @@
 	
 	This experiment concludes that once heterogeneity is introduced, the Meritocratic distribution tactic give the strongest cooperation incentive for every single predator type, not just on average. At first, this seems counter-intuitive for a merit based rule that should, in principle, alienate low merit predators. However, the presence of Specialists negates that disadvantage, providing that much needed success in coalition hunts when they are sought after as partners. The Egalitarian tactic is a strong second, reliably the runner-up for almost every predator, by guaranteeing every partner an unconditionally fair share regardless of merit or demand. Despite been marginally better than Asymmetric, the Altruistic tactic is the weakest overall incentive for cooperation as it has a huge variance between predator types. \\
 	
-	By a utilitarian standpoint, averaging the utilities gained as initiator and partner respectively, Meritocratic also produces the most utility out of all tactics and types since it is the main drive of cooperation. However, by an equity measure, Egalitarian is the fairer welfare outcome, as weak types are never squeezed into the bottom ends of the utility gain graphs the way a purely merit-blind reading of contribution would. Although, in this normal synergy setup, Meritocratic hasn't yet produced that extreme. \\
+	By a utilitarian standpoint, averaging the utilities gained as initiator and partner respectively, Meritocratic also produces the most utility out of all tactics and types since it is the main drive of cooperation. However, by an equity measure, Egalitarian is the fairer welfare outcome, as weak types are never squeezed into the bottom ends of the utility gain graphs the way a purely merit-blind reading of contribution would. Although, in this normal synergy setup, Meritocratic has not yet produced that extreme. \\
 	
 	\begin{table}[H]
 		\centering
