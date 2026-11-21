@@ -7,6 +7,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{geometry}
+\usepackage{adjustbox}
 \usepackage{float}
 \usepackage{multicol}
 \usepackage[ruled]{algorithm2e}
@@ -677,19 +678,19 @@
 	
 	In this experiment, we setup the most basic form of the simulation that consists of 10 "Baseline" predators, with a synergy factor of $β = 1$. Since every predator's type vector is identical, this experiment acts as a control condition, isolating the effect of the distribution tactic itself from any effect of population heterogeneity. \\
 	
-	As expected, solo hunting frequency is stable across all four tactics (123.2 - 124), with a minimal increase in the Asymmetric scenario. However, the symmetrical tactics (Altruistic, Egalitarian, Meritocratic) produce numerically identical coalition hunt frequency (24.64) as is a direct mathematical consequence of the split reward functions. When every predator has the same parameters and rational thresholds, the only tactic that shows a real behavioral difference is Asymmetric, bringing forth fewer coalition hunts (18.71) and a visible utility gap between initiator (340.73) and partner (290.44) roles.
+	As expected, solo hunt frequency is stable across all four tactics (123.2 - 124), with a minimal increase in the Asymmetric scenario. However, since every Baseline predator has the same parameters and rational thresholds, the Altruistic, Egalitarian and Meritocratic tactics prove to be symmetrical by producing numerically identical average coalition hunt frequency (24.64) as a direct mathematical consequence of the split reward functions. The only tactic that shows a real behavioral difference is the Asymmetric, bringing forth fewer average coalition hunts (18.71) and a visible utility gap between initiator (340.73) and partner (290.44) roles.
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_1_Baseline_10K_A.png}
-		\caption{Baseline Predator - Hunting Performance (Homogeneous, Normal Synergy).}
+		\adjustbox{width=1.3\textwidth, center}{\includegraphics{EXP_1_Baseline_10K_A.png}}
+		\caption{ Baseline Predator - Average Hunt Frequency (Homogeneous population, Normal synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_1_baseline_A}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_1_Baseline_10K_B.png}
-		\caption{Baseline Predator - Utility Distribution (Homogeneous, Normal Synergy).}
+		\adjustbox{width=1.4\textwidth, center}{\includegraphics{EXP_1_Baseline_10K_B.png}}
+		\caption{Baseline Predator - Average Utility Distribution (Homogeneous population, Normal Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_1_baseline_B}
 	\end{figure}
 	
@@ -705,15 +706,15 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_2_BASELINE_10K_A.png}
-		\caption{Baseline Predator - Hunting Performance (Heterogeneous, Normal Synergy).}
+		\adjustbox{width=1.3\textwidth, center}{\includegraphics{EXP_2_Baseline_10K_A.png}}
+		\caption{Baseline Predator - Average Hunt Frequency (Heterogeneous Population, Normal Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_2_baseline_A}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_2_BASELINE_10K_B.png}
-		\caption{Baseline Predator - Utility Distribution (Heterogeneous, Normal Synergy).}
+		\adjustbox{width=1.4\textwidth, center}{\includegraphics{EXP_2_Baseline_10K_B.png}}
+		\caption{Baseline Predator - Average Utility Distribution (Heterogeneous Population, Normal Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_2_baseline_B}
 	\end{figure}	
 	
@@ -723,33 +724,33 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_2_SPECIALIST_10K_A.png}
-		\caption{Specialist Predator - Hunting Performance (Heterogeneous, Normal Synergy).}
+		\adjustbox{width=1.3\textwidth, center}{\includegraphics{EXP_2_SPECIALIST_10K_A.png}}
+		\caption{Specialist Predator - Average Hunt Frequency (Heterogeneous Population, Normal Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_2_Specialist_A}
 	\end{figure}
 
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_2_SPECIALIST_10K_B.png}
-		\caption{Specialist Predator - Utility Distribution (Heterogeneous, Normal Synergy).}
+		\adjustbox{width=1.4\textwidth, center}{\includegraphics{EXP_2_SPECIALIST_10K_B.png}}
+		\caption{Specialist Predator - Average Utility Distribution (Heterogeneous Population, Normal Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_2_Specialist_B}
 	\end{figure}
-	
+
 	\textbf{Freeloader Predators} \\
 	
 	Freeloader predators show the clearest divergence between individual and cooperative viability. Their low merit is shown in both their solo hunt frequency (135–143) and their solo utility gain (~2070–2175), while their low hunting cost keeps the bar for a profitable coalition low. This combination explains why Freeloaders are the most responsive of any type to the Meritocratic tactic (38.19 coalition hunts, nearly double Baseline's), which at first looks paradoxical for a low merit predator under contribution-based splitting. The resolution lies in the capture probability function which scales with the coalition's combined effectiveness, so a Freeloader riding alongside its potential high merit partners,  experiences a large jump in success probability even for a small contribution weighted share. Furthermore, since its hunting cost is low, even a modest expected payoff passes the utility check. This is a more accurate reading of "freeloading" than passive exploitation. It is an active, rational response from a type with low cost of participation (low hunting cost), combined with someone else doing the heavy lifting.
 
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_2_FREELOADER_10K_A.png}
-		\caption{Freeloader Predator - Hunting Performance (Heterogeneous, Normal Synergy).}
+		\adjustbox{width=1.3\textwidth, center}{\includegraphics{EXP_2_FREELOADER_10K_A.png}}
+		\caption{Freeloader Predator - Average Hunt Frequency (Heterogeneous Population, Normal Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_2_Freeloader_A}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_2_FREELOADER_10K_B.png}
-		\caption{Freeloader Predator - Utility Distribution (Heterogeneous, Normal Synergy).}
+		\adjustbox{width=1.4\textwidth, center}{\includegraphics{EXP_2_FREELOADER_10K_B.png}}
+		\caption{Freeloader Predator - Average Utility Distribution (Heterogeneous Population, Normal Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_2_Freeloader_B}
 	\end{figure}
 	
@@ -759,15 +760,15 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_2_NEWBIE_10K_A.png}
-		\caption{Newbie Predator - Hunting Performance (Heterogeneous, Normal Synergy).}
+		\adjustbox{width=1.3\textwidth, center}{\includegraphics{EXP_2_NEWBIE_10K_A.png}}
+		\caption{Newbie Predator - Average Hunt Frequency (Heterogeneous Population, Normal Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_2_Newbie_A}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_2_NEWBIE_10K_B.png}
-		\caption{Newbie Predator - Utility Distribution (Heterogeneous, Normal Synergy).}
+		\adjustbox{width=1.4\textwidth, center}{\includegraphics{EXP_2_NEWBIE_10K_B.png}}
+		\caption{Newbie Predator - Average Utility Distribution (Heterogeneous Population, Normal Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_2_Newbie_B}
 	\end{figure} 
 	
@@ -787,7 +788,7 @@
 			Meritocratic & \textbf{20.35} & \textbf{72.41} & \textbf{38.19} & \textbf{40.79} & \textbf{171.74}\\
 			\hline
 		\end{tabular}
-		\caption{Average Coalition Frequency (Heterogeneous, Normal Synergy)}
+		\caption{Total Coalition Hunt Frequency for each tactic (Heterogeneous, Normal Synergy), summed across all predator types.}
 	\end{table}
 	
 	\begin{table}[H]
@@ -802,7 +803,7 @@
 			Meritocratic & \textbf{361.81} & \textbf{1721.18} & \textbf{355.61} & 260.01 & \textbf{2698.61}\\
 			\hline
 		\end{tabular}
-		\caption{Average Coalition Utility (Heterogeneous, Normal Synergy)}
+		\caption{Total Coalition Utility Distribution for each tactic (Heterogeneous, Normal Synergy), summed across all predator types.}
 	\end{table}
 	
 	\subsection{Heterogeneous Predators, High Synergy}
@@ -815,15 +816,15 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_3_BASELINE_10K_A.png}
-		\caption{Baseline Predator - Hunting Performance (Heterogeneous, High Synergy).}
+		\adjustbox{width=1.3\textwidth, center}{\includegraphics{EXP_3_BASELINE_10K_A.png}}
+		\caption{Baseline Predator - Average Hunt Frequency (Heterogeneous Population, High Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_3_baseline_A}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_3_BASELINE_10K_B.png}
-		\caption{Baseline Predator - Utility Distribution (Heterogeneous, High Synergy).}
+		\adjustbox{width=1.4\textwidth, center}{\includegraphics{EXP_3_BASELINE_10K_B.png}}
+		\caption{Baseline Predator - Average Utility Distribution (Heterogeneous Population, High Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_3_baseline_B}
 	\end{figure}
 	
@@ -833,15 +834,15 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_3_SPECIALIST_10K_A.png}
-		\caption{Specialist Predator - Hunting Performance (Heterogeneous, High Synergy).}
+		\adjustbox{width=1.3\textwidth, center}{\includegraphics{EXP_3_SPECIALIST_10K_A.png}}
+		\caption{Specialist Predator - Average Hunt Frequency (Heterogeneous Population, High Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_3_Specialist_A}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_3_SPECIALIST_10K_B.png}
-		\caption{Specialist Predator - Utility Distribution (Heterogeneous, High Synergy).}
+		\adjustbox{width=1.4\textwidth, center}{\includegraphics{EXP_3_SPECIALIST_10K_B.png}}
+		\caption{Specialist Predator - Average Utility Distribution (Heterogeneous Population, High Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_3_Specialist_B}
 	\end{figure}
 	
@@ -851,15 +852,15 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_3_FREELOADER_10K_A.png}
-		\caption{Freeloader Predator - Hunting Performance (Heterogeneous, High Synergy).}
+		\adjustbox{width=1.3\textwidth, center}{\includegraphics{EXP_3_FREELOADER_10K_A.png}}
+		\caption{Freeloader Predator - Average Hunt Frequency (Heterogeneous Population, High Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_3_Freeloader_A}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_3_FREELOADER_10K_B.png}
-		\caption{Freeloader Predator - Utility Distribution (Heterogeneous, High Synergy).}
+		\adjustbox{width=1.4\textwidth, center}{\includegraphics{EXP_3_FREELOADER_10K_B.png}}
+		\caption{Freeloader Predator - Average Utility Distribution (Heterogeneous Population, High Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_3_Freeloader_B}
 	\end{figure}
 	
@@ -869,15 +870,15 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_3_NEWBIE_10K_A.png}
-		\caption{Newbie Predator - Hunting Performance (Heterogeneous, High Synergy).}
+		\adjustbox{width=1.3\textwidth, center}{\includegraphics{EXP_3_NEWBIE_10K_A.png}}
+		\caption{Newbie Predator - Average Hunt Frequency (Heterogeneous Population, High Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_3_Newbie_A}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=1\textwidth]{EXP_3_NEWBIE_10K_B.png}
-		\caption{Newbie Predator - Utility Distribution (Heterogeneous, High Synergy).}
+		\adjustbox{width=1.4\textwidth, center}{\includegraphics{EXP_3_NEWBIE_10K_B.png}}
+		\caption{Newbie Predator - Average Utility Distribution (Heterogeneous Population, High Synergy), averaged over 10,000 episodes of 500 steps for each tactic.}
 		\label{fig:exp_3_Newbie_B}
 	\end{figure}
 	
@@ -895,7 +896,7 @@
 			Meritocratic & \textbf{48.38} & \textbf{74.08} & 59.93 & \textbf{74.12} & \textbf{256.51} \\
 			\hline
 		\end{tabular}
-		\caption{Average Coalition Frequency (Heterogeneous, High Synergy)}
+		\caption{Total Coalition Hunt Frequency for each tactic (Heterogeneous, High Synergy), summed across all predator types.}
 	\end{table}
 	
 	\begin{table}[H]
@@ -910,7 +911,7 @@
 			Meritocratic & \textbf{981.90} & \textbf{2234.76} & 704.53 & 581.18 & \textbf{4502.37}\\
 			\hline
 		\end{tabular}
-		\caption{Average Coalition Utility (Heterogeneous, High Synergy)}
+		\caption{Total Coalition Utility Distribution for each tactic (Heterogeneous, High Synergy), summed across all predator types.}
 	\end{table}
 	
 	\section {Experiments Conclusions}
