@@ -154,7 +154,7 @@
 	\chapter{Theoretical Background}
 	\label{ch:background}
 	
-	In this chapter, we introduce the theoretical concepts that are necessary to understand the design decisions we made throughout this thesis. These concepts are tied to specific principles that our simulation environment and coalition formation framework directly build upon in Chapter 3. We begin with a brief overview of multiagent systems and the notion of a rational, utility-maximizing agent, the underlying behavior of our predator agents in our environment. We then turn to cooperative game theory, covering the structure of coalitions, the non-cooperative bargaining model of our negotiation protocol and the competing principles of distributive justice that our reward allocation tactics are based on. Finally, we introduce the notions of multiagent reward design, resource-bounded rationality, and spatial representation in agent-based models.
+	In this chapter, we introduce the theoretical concepts that are necessary to understand the design decisions we made throughout this thesis. These concepts are tied to specific principles that our simulation environment and coalition formation framework directly build upon in Chapter 3. We begin with a brief overview of multiagent systems and the notion of a rational, utility-maximizing agent, the underlying behavior of our predator agents in our environment. We then turn to cooperative game theory, covering the structure of coalitions, the non-cooperative bargaining model of our negotiation protocol and the competing principles of distributive justice that our reward allocation tactics are based on. Finally, we introduce the notions of multiagent reward design and resource-bounded rationality in agent-based models.
 	
 	\section{Rational Agents and Utility}
 	
@@ -193,6 +193,10 @@
 	In multiagent systems and cooperative game theory, \textit{social welfare} refers to the total benefit or utility obtained by all agents in a system \cite{Chalkiadakis2011}. A coalition forms depending on the division of its reward, and whether it's beneficial for all partners involved. However, that utilitarian view of social welfare is not the only one we examine in our thesis. There is also the idea that social welfare is measured by how that utility is spread to the population, judging a division by the position of the worst-off agents \cite{Sen2017}. The two views can disagree, and a division that maximizes one does not necessarily maximize the other. \\
 
 	How a surplus should be divided is a question of fairness. Deutsch \cite{Deutsch1975} identifies three competing principles. \textit{Equity}, where agents are rewarded according to their contribution to the action. \textit{Equality}, where all receive the same reward evenly. And lastly \textit{Need}, where rewards are distributed according to necessity or operational continuity. Each favors a different outcome and none is universally correct, which is why the choice among them is an empirical question for a population of heterogeneous agents. Our four reward distribution tactics (Section 3.4.2) are operationalizations of these principles, plus a fourth that is based on the concept that the proposer should be compensated for its effort in coordinating the group \cite{Chalkiadakis2011}.
+
+	\section{Agent-based Models and Reward Design}
+
+
 
 	\chapter{Simulation Environment}
 	\label{ch:approach}
