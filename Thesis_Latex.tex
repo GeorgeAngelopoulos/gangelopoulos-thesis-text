@@ -160,21 +160,39 @@
 	
 	A multiagent system consists of autonomous entities, called agents, that perceive a shared environment and act in it in pursuit of their own objectives. An agent’s objectives are captured by a utility or reward function, which assigns a number to every possible outcome, so that preferring one outcome over another simply means assigning it a higher utility. Since the outcome of an action is usually uncertain, an agent is called rational when it selects the action with the highest expected utility. That is, the average utility of its possible outcomes weighted by their probabilities. In our environment this takes a simple form, from the expected utility of an hunting action that is its probability of success multiplied by its reward minus its cost, to the expected utility of movement that is the expected utility of a hunting a distant prey minus the cost of closing that distance. \\
 
-	Rewards do not always arrive at the moment an action is taken. When an agent pays a cost now for a payoff several steps later, such as travelling toward distant prey, it must compare present and future values. The standard way to do this is discounting, where a payoff received after $d$ steps is weighted by $\gamma^{d}$, with $\gamma \in (0,1)$. A bigger $\gamma$ makes the short-term reward more attractive, while the smaller ones favor long-term rewards. We use this single idea, in the movement expected utility of Section 3.3.2, and nothing else from sequential decision-making or learning. \\
+	Rewards do not always arrive at the moment an action is taken. When an agent pays a cost now for a payoff several steps later, such as travelling toward distant prey, it must compare present and future values. The standard way to do this is discounting, where a payoff received after $d$ steps is weighted by $\gamma^{d}$, with $\gamma \in (0,1)$. A $\gamma$ close to $1$ makes the agent far-sighted, as future payoffs retain most of their value, while a small $\gamma$ makes it myopic and favours short-term rewards. We use this single key idea, in the movement expected utility of Section 3.3.2. However, for completeness, we outline here the key concept of the well-known Bellman equations \cite{Sutton2018} that dictate how an agent should optimize its sequential decisions, via relating the value of a current state or state-action pair to the expected reward and the value of future states. In a Markov decision process with states $s$, actions $a$, transition probabilities $P(s' \mid s, a)$, rewards $R(s,a,s')$ and discount factor $\gamma$, the value of a policy $\pi$ satisfies:
 	
+	\begin{equation}
+	V^{\pi}(s) = \sum_{a} \pi(a \mid s) \sum_{s'} P(s' \mid s, a)\big[R(s,a,s') + \gamma V^{\pi}(s')\big],
+	\end{equation} \\
+
+	while the optimal value function satisfies the Bellman optimality equation:
+	
+	\begin{equation}
+	V^{*}(s) = \max_{a} \sum_{s'} P(s' \mid s, a)\big[R(s,a,s') + \gamma V^{*}(s')\big].
+	\end{equation} \\
+
+	When transitions are deterministic, so that action $a$ in state $s$ leads to a single next state $s'$ with reward $R(s,a)$, this reduces to:
+	
+	\begin{equation}
+	V^{*}(s) = \max_{a}\big[R(s,a) + \gamma V^{*}(s')\big].
+	\end{equation} \\
+
+	These equations state that the value of being in a situation equals what you get right now plus what you expect to get from where you end up next, with later rewards counted for less (by $\gamma$). The optimal version assumes that at every step you pick the action that makes this total largest.
+
 	\section{Cooperative Game Theory and Coalition Formation}
 	
-	In cooperative game theory, a set of agents N can form coalitions $C \subseteq N$, and a characteristic function $v(C)$ assigns each coalition the value it can achieve. It is essential to answer which set of coalitions form eventually, and how is $v(C)$ divided among its members. The classical answers are solution concept such as the coalition core, where no group of agents would prefer to leave, and the Shapley Value, which pays each agent its average marginal contribution \cite{Chalkiadakis2011}. These concepts describe what a fair or stable division should look like, but they assume agents can compute and agree on a division over all possible coalition combinations, which is unrealistic for decentralized agents under time pressure. In our model the value of a coalition is not a fixed number. It is a higher capture probability for a prey, which then yields an expected reward. Instead of computing a solution concept, we let agents reach a division through simple negotiation rounds.
+	In cooperative game theory \cite{Chalkiadakis2011}, a set of agents N can form coalitions $C \subseteq N$, and a characteristic function $v(C)$ assigns each coalition the value it can achieve. It is essential to answer which set of coalitions form eventually, and how is $v(C)$ divided among its members. The classical answers are solution concept such as the coalition \textit{core}, where no group of agents would prefer to leave, and the \textit{Shapley Value}, which pays each agent its average marginal contribution \cite{Chalkiadakis2011}. These concepts describe what a stable or fair payoff division should look like, but they assume agents can compute and agree on a division over all possible coalition combinations, which is unrealistic for decentralized agents under time pressure. In our model the value of a coalition is not a fixed number. It is a \textit{higher capture probability} for a prey, which then yields an \textit{expected reward}. Instead of computing a solution concept, we let agents reach a payoff allocation agreement via negotiations lasting for a number of rounds.
 
-	\section{Barganing over Coalitions}
+	\section{Bargaining to form Coalitions}
 
 	A common way to avoid assuming central coordination is to model coalition formation as a non-cooperative bargaining game. We follow the random-proposer model [2], in which a randomly chosen agent proposes both the coalition and the division of its reward, and every other agent can only accept or reject the proposal. In the equilibrium analysis of such games, known as a stationary subgame-perfect equilibrium (SSPE), a responder accepts exactly when the share offered is at least its discounted expected payoff for rejecting, which acts as its reservation value. Our acceptance criteria (Section 3.4.3) apply this logic: a partner joins only if the offer meets its demand and is at least as good as hunting alone. We do not derive the equilibrium. We borrow its acceptance rule and use it as a practical decision procedure. \\
 	
 	\section{Social Welfare and Distributive Justice}
 
-	In multiagent systems and cooperative game theory, social welfare refers to the total benefit or utility obtained by all agents in a system. A coalition forms depending on the division of its reward, and whether it's beneficial for all partners involved. However, that utilitarian view of social welfare is not the only one we examine in our thesis. There is also the idea that social welfare is measured by how that utility is spread to the population, judging a division by the position of the worst-off agents. The two views can disagree, and a division that maximizes one does not necessarily maximize the other. \\
+	In multiagent systems and cooperative game theory, \textit{social welfare} refers to the total benefit or utility obtained by all agents in a system \cite{Chalkiadakis2011}. A coalition forms depending on the division of its reward, and whether it's beneficial for all partners involved. However, that utilitarian view of social welfare is not the only one we examine in our thesis. There is also the idea that social welfare is measured by how that utility is spread to the population, judging a division by the position of the worst-off agents \cite{Sen2017}. The two views can disagree, and a division that maximizes one does not necessarily maximize the other. \\
 
-	How a surplus should be divided is a question of fairness. Deutsch \cite{Deutsch1975} identifies three competing principles. Equity, where agents are rewarded according to their contribution to the action. Equality, where all receive the same reward evenly. And lastly Need, where rewards are distributed according to necessity or operational continuity. Each favors a different outcome and none is universally correct, which is why the choice among them is an empirical question for a population of heterogeneous agents. Our four reward distribution tactics (Section 3.4.2) are operationalizations of these principles, plus a fourth that is based on the concept that the proposer should be compensated for its effort in coordinating the group \cite{Chalkiadakis2011}.
+	How a surplus should be divided is a question of fairness. Deutsch \cite{Deutsch1975} identifies three competing principles. \textit{Equity}, where agents are rewarded according to their contribution to the action. \textit{Equality}, where all receive the same reward evenly. And lastly \textit{Need}, where rewards are distributed according to necessity or operational continuity. Each favors a different outcome and none is universally correct, which is why the choice among them is an empirical question for a population of heterogeneous agents. Our four reward distribution tactics (Section 3.4.2) are operationalizations of these principles, plus a fourth that is based on the concept that the proposer should be compensated for its effort in coordinating the group \cite{Chalkiadakis2011}.
 
 	\chapter{Simulation Environment}
 	\label{ch:approach}
@@ -469,7 +487,7 @@
 
 	Resting is a reset action that has $E[U_{solo}] = 0$. Predators that have no viable options simply stay idle and wait for more favorable conditions. Movement is available only in the neighboring hexes of the predators. Since it is penalizing to their food stockpile with a global metabolic cost of $C_move = 5$, the expected utility of movement is always negative, resulting in constant idleness. So, there was a need for a utility calculation function that drives predators to exploration if prey was not nearby. \\
 	
-	For these reasons, we come up with a discounted, myopic, forward-looking expected utility function for movement. The predator evaluates each candidate neighboring hex not by its immediate payoff, but by the best discounted opportunity it opens up, that is the highest expected utility obtainable from any prey in the environment, weighted by how many further movement steps would be required to reach it. A prey in a distance of $d$ hexes away contributes a discounted reward of $γ^d*U_{solo}$, offset by the discounted cumulative cost of the $d$ steps needed to reach its coordinates. This allows a neighboring hex that moves the predator closer to a distant but valuable prey target to score some positive net utility, even though no capture is possible in this turn. This works as long as the discounted future reward outweighs the discounted cost of the journey. \\
+	For these reasons, we come up with a discounted, forward-looking expected utility function for movement. The predator evaluates each candidate neighboring hex not by its immediate payoff, but by the best discounted opportunity it opens up, that is the highest expected utility obtainable from any prey in the environment, weighted by how many further movement steps would be required to reach it. A prey in a distance of $d$ hexes away contributes a discounted reward of $γ^d*U_{solo}$, offset by the discounted cumulative cost of the $d$ steps needed to reach its coordinates. This allows a neighboring hex that moves the predator closer to a distant but valuable prey target to score some positive net utility, even though no capture is possible in this turn. This works as long as the discounted future reward outweighs the discounted cost of the journey. \\
 	
 	This function serves two purposes. First, it gives predators a principled reason to explore rather than remain passive. Second, it biases exploration as predators select the neighboring hex that maximizes discounted proximity to the most rewarding prey currently known, producing search behavior that resembles goal-directed foraging rather than purposeless roaming. Only when no prey exists within a horizon where $γ^d*U_{solo}$ can exceed the discounted cost of reaching it does resting again becomes the dominant action, allowing predators to conserve their food reserves stockpile until conditions improve.
 	
@@ -774,7 +792,7 @@
 	
 	This experiment concludes that once heterogeneity is introduced, the Meritocratic distribution tactic give the strongest cooperation incentive for every single predator type, not just on average. At first, this seems counter-intuitive for a merit based rule that should, in principle, alienate low merit predators. However, the presence of Specialists negates that disadvantage, providing that much needed success in coalition hunts when they are sought after as partners. The Egalitarian tactic is a strong second, reliably the runner-up for almost every predator, by guaranteeing every partner an unconditionally fair share regardless of merit or demand. Despite been marginally better than Asymmetric, the Altruistic tactic is the weakest overall incentive for cooperation as it has a huge variance between predator types. \\
 	
-	By a utilitarian standpoint, averaging the utilities gained as initiator and partner respectively, Meritocratic also produces the most utility out of all tactics and types since it is the main drive of cooperation. However, by an equity measure, Egalitarian is the fairer welfare outcome, as weak types are never squeezed into the bottom ends of the utility gain graphs the way a purely merit-blind reading of contribution would. Although, in this normal synergy setup, Meritocratic has not yet produced that extreme. \\
+	By a utilitarian standpoint, summing the utilities gained as initiator and partner respectively, Meritocratic also produces the most utility out of all tactics and types since it is the main drive of cooperation. However, by an equity measure, Egalitarian is the fairer welfare outcome, as weak types are never squeezed into the bottom ends of the utility gain graphs the way a purely merit-blind reading of contribution would. Although, in this normal synergy setup, Meritocratic has not yet produced that extreme. \\
 	
 	\begin{table}[H]
 		\centering
@@ -797,13 +815,13 @@
 			\hline
 			Tactic & Baseline & Specialist & Freeloader & Newbie & Total \\
 			\hline
-			Altruistic & 224.64 & 1593.15 & 242.59 & 129.18 & 2189.56 \\
-			Asymmetric & 318.35 & 1364.19 & 287.87 & 274.56 & 2244.97 \\
-			Egalitarian & 331.96 & 1537.08 & 323.98 & \textbf{358.75} & 2551.77 \\
-			Meritocratic & \textbf{361.81} & \textbf{1721.18} & \textbf{355.61} & 260.01 & \textbf{2698.61}\\
+			Altruistic & 449.27 & 3186.29 & 485.17 & 258.36 & 4379.09 \\
+			Asymmetric & 636.69 & 2728.38 & 575.73 & 549.12 & 4489.92 \\
+			Egalitarian & 663.91 & 3074.15 & 647.95 & \textbf{717.5} & 5103.51 \\
+			Meritocratic & \textbf{723.62} & \textbf{3442.36} & \textbf{711.21} & 520.02 & \textbf{5397.21}\\
 			\hline
 		\end{tabular}
-		\caption{Total Coalition Utility Distribution for each tactic (Heterogeneous, Normal Synergy), summed across all predator types.}
+		\caption{Total Coalition Utility Distribution for each tactic (Heterogeneous, Normal Synergy), summed across initiator and partner values and all predator types.}
 	\end{table}
 	
 	\subsection{Heterogeneous Predators, High Synergy}
@@ -882,7 +900,7 @@
 		\label{fig:exp_3_Newbie_B}
 	\end{figure}
 	
-	The Meritocratic tactic remains the top driver for cooperation on average (64.13) and wins outright for Baseline, Newbie, and Specialist. Asymmetric rises sharply to second place overall (58.37) and becomes the single best tactic for Freeloader. Egalitarian, notably, drops to last place on average as high synergy makes the flat split look worse to agents who could be extracting more via merit-weighting or by taking the leader's share in coalitions. Since coalition counts rise for everyone under every tactic once synergy doubles, utility gains rise as well across the board regardless of tactic. Synergy is a bigger factor than the tactic choice for raw output. But the equity gap widens specifically under Meritocratic. Specialist's utility advantage over the low-merit types grows even as their participation gap shrinks. This is the empirical core of the thesis's own claim that no amount of cooperative synergy can overcome the deterrent of a distribution tactic that rewards agents based on contribution alone. Synergy fixes who participates, not who benefits. Egalitarian is therefore the tactic that best protects social welfare in the equity sense under high synergy, even though it's no longer the top tactic for raw cooperation frequency.
+	The Meritocratic tactic remains the top driver for cooperation and wins outright for Baseline, Newbie, and Specialist. Asymmetric rises sharply to second place overall, becoming the single best tactic for Freeloader. Egalitarian, notably, drops to last place on average as high synergy makes the flat split look worse to agents who could be extracting more via merit-weighting or by taking the leader's share in coalitions. Since coalition counts rise for everyone under every tactic once synergy doubles, utility gains rise as well across the board regardless of tactic. Synergy is a bigger factor than the tactic choice for raw output. But the equity gap widens specifically under Meritocratic. Specialist's utility advantage over the low-merit types grows even as their participation gap shrinks. This is the empirical core of the thesis's own claim that no amount of cooperative synergy can overcome the deterrent of a distribution tactic that rewards agents based on contribution alone. Synergy fixes who participates, not who benefits. Egalitarian is therefore the tactic that best protects social welfare in the equity sense under high synergy, even though it's no longer the top tactic for raw cooperation frequency.
 	
 	\begin{table}[H]
 		\centering
@@ -905,20 +923,20 @@
 			\hline
 			Tactic & Baseline & Specialist & Freeloader & Newbie & Total \\
 			\hline
-			Altruistic & 678.30 & 2115.99 & 902.29 & 372.44 & 4069.02 \\
-			Asymmetric & 797.62 & 1827.72 & \textbf{906.01} & \textbf{883.15} & 4414.50 \\
-			Egalitarian & 539.71 & 2032.25 & 648.64 & 777.67 & 3998.27 \\
-			Meritocratic & \textbf{981.90} & \textbf{2234.76} & 704.53 & 581.18 & \textbf{4502.37}\\
+			Altruistic & 1356.6 & 4231.97 & 974.58 & 744.87 & 7308.02 \\
+			Asymmetric & 1595.23 & 3655.43 & \textbf{1812.01} & \textbf{1766.29} & 8828.96 \\
+			Egalitarian & 1079.41 & 4064.49 & 1297.28 & 1555.34 & 7996.52 \\
+			Meritocratic & \textbf{1963.79} & \textbf{4469.51} & 1409.05 & 1162.35 & \textbf{9004.7}\\
 			\hline
 		\end{tabular}
-		\caption{Total Coalition Utility Distribution for each tactic (Heterogeneous, High Synergy), summed across all predator types.}
+		\caption{Total Coalition Utility Distribution for each tactic (Heterogeneous, High Synergy), summed across initiator and partner values and all predator types.}
 	\end{table}
 	
 	\section {Experiments Conclusions}
 	
 	In conclusion, Meritocratic is the single most reliable driver of coalition formation and cooperation across every condition tested. It wins for nearly every individual predator type in both heterogeneous experiments and is on par in the homogeneous experiment. This is the case because high merit predators result in more successful cooperative hunts on average that reward every participant, since it is rational enough for them even while their low merit is translated into a conservative share of the reward. Experiment 1 (homogeneous) shows this is not a property of the Meritocratic formula in isolation. Under equal parameters, Meritocratic, Egalitarian, and Altruistic are mathematically identical. It only emerges once real heterogeneity is introduced (Experiments 2 and 3). \\
 	
-	In terms of social welfare and utility gains, the three experiments together support a genuine trade-off rather than a single winner, and this is the thesis's central finding. If social welfare is determined by total utility extracted by the predator population, Meritocratic performs best, since it consistently maximizes coalition participation across all predator types and every successful coalition hunt is a raw increase of reward into the population that would otherwise not exist for low coalition frequency tactics. However, if social welfare is determined by fairness, broad-based benefit across the population, Egalitarian is the most robust choice. It is the only tactic whose formula is indifferent to merit or demand, so it never produces the divergence seen under Meritocratic, where high merit predators lead over low merit ones. Egalitarian never wins outright on raw output, but it never collapses for any type either. \\ 
+	In terms of social welfare and utility gains, one of the thesis' key findings is that the three experiments together support a genuine trade-off rather than a single winner. If social welfare is determined by total utility extracted by the predator population, Meritocratic performs best, since it consistently maximizes coalition participation across all predator types and every successful coalition hunt is a raw increase of reward into the population that would otherwise not exist for low coalition frequency tactics. However, if social welfare is determined by fairness, broad-based benefit across the population, Egalitarian is the most robust choice. It is the only tactic whose formula is indifferent to merit or demand, so it never produces the divergence seen under Meritocratic, where high merit predators lead over low merit ones. Egalitarian never wins outright on raw output, but it never collapses for any type either. \\ 
 	
 	As it turns out, Altruistic functions as a targeted equity mechanism rather than a general-purpose welfare maximizer. It is specifically protective of the lowest merit types (Freeloader, Newbie) but never the best consistent performer, essentially subsidizing weak predators at the cost of the overall population throughput. Finally, Asymmetric is the most condition-dependent tactic: worst under homogeneity, mediocre under normal synergy, and surprisingly strong under high synergy for the Freeloader type since its fixed leader's share only becomes broadly acceptable once total coalition payoffs are large enough to absorb it. \\
 	
